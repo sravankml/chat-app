@@ -17,6 +17,13 @@ class GetUserList(generics.ListAPIView):
 class CreateUser(generics.CreateAPIView):
     """
     Create new user
+    post data:
+    {
+    "username": "",
+    "email": "",
+    "password1": "",
+    "password2": ""
+}
     """
     permission_classes = [IsAdminUser]
     serializer_class = CreateUserSerializer
@@ -30,7 +37,14 @@ class CreateUser(generics.CreateAPIView):
 
 
 class UpdateUser(generics.RetrieveUpdateDestroyAPIView):
-    """ Update user details """
+    """ Update user details 
+    post data:
+    {
+    "id": 4,
+    "username": "sam",
+    "email": "sam@gmail.com"
+}
+    """
     permission_classes = [IsAdminUser]
     queryset = User.objects.all()
     serializer_class = GetOrUpdateUserListSerializer
