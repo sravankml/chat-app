@@ -1,6 +1,7 @@
-from django.db import models
 from base.models import AbstractModel
 from django.contrib.auth.models import User
+from django.db import models
+
 # Create your models here.
 
 
@@ -20,3 +21,12 @@ class GroupMemberChat(AbstractModel):
 
     def __str__(self):
         return f'{self.member}-{self.message}'
+
+
+class LikeMessage(AbstractModel):
+    message = models.ForeignKey(
+        to='groups.GroupMemberChat', on_delete=models.CASCADE)
+    liked_by = models.ManyToManyField(User)
+
+    def __str__(self):
+        return f'{self.message}'

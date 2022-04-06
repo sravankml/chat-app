@@ -1,6 +1,5 @@
-from django.urls import path, include
-from accounts.api_v1.views import GetUserList, CreateUser, UpdateUser
-
+from accounts.api_v1.views import CreateUser, GetUserList, UpdateUser
+from django.urls import path
 
 urlpatterns = [
     path('list/', GetUserList.as_view(), name='user-list'),

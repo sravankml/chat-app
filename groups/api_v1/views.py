@@ -1,8 +1,9 @@
 from accounts.api_v1.serializers import GetOrUpdateUserListSerializer
 from django.contrib.auth.models import User
 from groups.api_v1.serializers import (ChatGroupSerializer,
-                                       GroupMemberChatSerializer)
-from groups.models import ChatGroup, GroupMemberChat
+                                       GroupMemberChatSerializer,
+                                       LikeMessageSerializer)
+from groups.models import ChatGroup, GroupMemberChat, LikeMessage
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -105,3 +106,31 @@ class ListMembersGroupChats(generics.ListAPIView):
         group_id = data.get('group_id')
         return GroupMemberChat.objects.filter(chat_group_id=group_id
                                               ).order_by('created_at')
+
+
+class MessageLikes(APIView):
+
+    def get(self, request):
+        member_chat = LikeMessage.objects.all()
+        serialized_member_chat = LikeMessageSerializer(
+            member_chat, many=True).data
+        return Response(serialized_member_chat)
+
+    def post(self, request):
+        """
+        Like A chat message
+        post data:
+       {"message_id":"1"}
+        """
+        data = request.data
+        message_id = data.get('message_id')
+        user = request.user
+
+        try:
+            like_message = LikeMessage.objects.get(message__id=message_id)
+            like_message.liked_by.add(user)
+        except LikeMessage.DoesNotExist:
+            message = GroupMemberChat.objects.get(id=message_id)
+            message_liked = LikeMessage.objects.create(message=message)
+            message_liked.liked_by.add(user)
+        return Response(status=status.HTTP_200_OK)

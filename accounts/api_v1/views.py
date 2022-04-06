@@ -32,7 +32,8 @@ class CreateUser(generics.CreateAPIView):
     def post(self, request):
         data = request.data
         user = CreateUserSerializer(data=data)
-        user.save()
+        if user.is_valid():
+            user.save()
         return Response(status=status.HTTP_200_OK)
 
 
@@ -43,7 +44,7 @@ class UpdateUser(generics.RetrieveUpdateDestroyAPIView):
     "id": 4,
     "username": "sam",
     "email": "sam@gmail.com"
-}
+    }
     """
     permission_classes = [IsAdminUser]
     queryset = User.objects.all()
